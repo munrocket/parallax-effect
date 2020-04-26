@@ -1,0 +1,29 @@
+{
+  "name": "parallax-effect",
+  "version": "0.0.1",
+  "description": "Image-Based 3D Display with Motion Parallax using Face Tracking",
+  "main": "dist/parallax-effect.js",
+  "module": "dist/parallax-effect.esm.js",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -cw",
+    "start": "cd docs && servez -p 1234 -S"
+  },
+  "keywords": [
+    "3d",
+    "display",
+    "face",
+    "tracking",
+    "motion",
+    "wallpaper",
+    "background"
+  ],
+  "author": "munrocket",
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^2.7.2",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "servez": "^1.7.0",
+    "typescript": "^3.8.3"
+  }
+}
