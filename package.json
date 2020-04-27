@@ -7,7 +7,19 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw",
-    "start": "cd docs && servez -p 1234 -S"
+    "start": "servez -S"
+  },
+  "dependencies": {
+    "@tensorflow-models/blazeface": "^0.0.5",
+    "@tensorflow/tfjs-backend-wasm": "^1.7.3",
+    "@tensorflow/tfjs-converter": "^1.7.3",
+    "@tensorflow/tfjs-core": "^1.7.3"
+  },
+  "devDependencies": {
+    "rollup": "^2.7.2",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "servez": "^1.7.0"
   },
   "keywords": [
     "3d",
@@ -19,11 +31,5 @@
     "background"
   ],
   "author": "munrocket",
-  "license": "MIT",
-  "devDependencies": {
-    "rollup": "^2.7.2",
-    "rollup-plugin-typescript2": "^0.27.0",
-    "servez": "^1.7.0",
-    "typescript": "^3.8.3"
-  }
+  "license": "MIT"
 }

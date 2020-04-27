@@ -38,31 +38,43 @@
       max-height: 45vh;
       max-width: 55vw;
     }
+    #video {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 150px;
+      transform:scaleX(-1);
+      -webkit-transform:scaleX(-1);
+      z-index: 20000;
+    }
   </style>
 </head>
 <body>
-
   <div class="horisontal">
     <div class="vertical">
 
       <h1>TURN ON WEBCAM AND</h1>
       <img src="res/moon.png">
-      <h1>WAIT FOR THE LOAD</h1>
+      <h1>MOVE YOUR HEAD</h1>
 
     </div>
   </div>
 
-  <!-- TensorFlow with WASM/WebGL backend -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script>
-  <script>tf.setBackend('wasm').then(() => main());</script>
+  <!-- refactor to js -->
+  <video id="video" autoplay></video>
 
-  <!-- TensorFlow model -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+  <script src="../dist/parallax-effect.js"></script>
 
   <script>
+    let video = document.getElementById('video');
 
+    async function init() {
+      await ParallaxEffect.init(video, 8, 0.32, (x) => { console.log(x) });
+    }
+
+    init();
   </script>
 
 </body>
