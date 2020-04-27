@@ -1,7 +1,7 @@
 {
   "name": "parallax-effect",
   "version": "0.0.1",
-  "description": "Image-Based 3D Display with Motion Parallax using Face Tracking",
+  "description": "Parallax effect for web using face tracking. Image-based 3d display with tfjs.",
   "main": "dist/parallax-effect.js",
   "module": "dist/parallax-effect.esm.js",
   "scripts": {

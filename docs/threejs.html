@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    #container {
+      position: fixed;
+      top: 0;
+      z-index: 20000;
+      width: 200px;
+      height: 150px;
+    }
+
+    #face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    video {
+      position: absolute;
+      transform:scaleX(-1);
+      -webkit-transform:scaleX(-1);
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <video id="video" autoplay></video>
+    <canvas id="face" ></canvas>
+  </div>
+
+
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.115.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.115.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <!-- TensorFlow with WASM/WebGL backend -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script>
+  <script>tf.setBackend('wasm').then(() => main());</script>
+
+  <!-- TensorFlow model -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+
+  <script>
+
+    var topcamera, scene, renderer, mesh;
+
+    var helper;
+
+    init();
+    animate();
+
+    var seed = 0.016;
+    Math.random = function () {
+
+      var x = Math.sin( seed ++ ) * 10000;
+      return x - Math.floor( x );
+
+    };
+
+    function init() {
+
+      var dummy = new THREE.Object3D();
+      var xCount = 5;
+      var yCount = 15;
+      var count = xCount * yCount;
+
+      renderer = new THREE.WebGLRenderer( { antialias: true } );
+      renderer.setPixelRatio( window.devicePixelRatio );
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      document.body.appendChild( renderer.domElement );
+
+      scene = new THREE.Scene();
+
+      maincamera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 70 );
+      maincamera.position.set( 0, 0, 8 );
+
+      topcamera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 300 );
+      topcamera.position.set( 0, 80, 4 );
+      topcamera.lookAt( 0, 0, 0 );
+
+      helper = new THREE.CameraHelper( maincamera );
+      scene.add( helper );
+
+      var cameraRig = new THREE.Group();
+      cameraRig.add( maincamera );
+      scene.add( cameraRig );
+
+      new THREE.GLTFLoader().load( 'res/head.glb', function ( gltf ) {
+
+        var instanceColors = [];
+
+        for ( var i = 0; i < 3 * count; i ++ ) {
+
+          instanceColors.push( Math.random() );
+
+        }
+
+        var geometry = gltf.scene.children[ 0 ].geometry;
+        geometry.setAttribute( 'instanceColor', new THREE.InstancedBufferAttribute( new Float32Array( instanceColors ), 3 ) );
+        geometry.computeVertexNormals();
+        geometry.scale( 0.5, 0.5, 0.5 );
+
+        new THREE.TextureLoader().load( 'res/matcap.jpg', function ( texture ) {
+
+          texture.encoding = THREE.sRGBEncoding;
+          var material = new THREE.MeshMatcapMaterial( { color: 0xaaaaff, matcap: texture } );
+
+          material.onBeforeCompile = function ( shader ) {
+
+            shader.vertexShader = shader.vertexShader
+              .replace( 'void main() {', [
+                  'attribute vec3 instanceColor;',
+                  'varying vec3 vInstanceColor;',
+                  'void main() {',
+                  'vInstanceColor = instanceColor;'
+                ].join( '\n' ) );
+
+            shader.fragmentShader = shader.fragmentShader
+              .replace( '#include <common>', 'varying vec3 vInstanceColor;' )
+              .replace( 'vec4 diffuseColor = vec4( diffuse, opacity );',
+                'vec4 diffuseColor = vec4( diffuse * vInstanceColor, opacity );' );
+
+          };
+
+          mesh = new THREE.InstancedMesh( geometry, material, count );
+
+          if ( mesh ) {
+
+            var i = 0;
+            var xoffset = 5;
+            var yoffset = 4;
+
+            for ( var x = 0; x < xCount; x ++ ) {
+
+              for ( var z = 0; z < yCount; z ++ ) {
+
+                dummy.position.set( xoffset * ( xCount / 2 - x - 0.5 ), 0, - yoffset * z );
+                dummy.updateMatrix();
+                mesh.setMatrixAt( i ++, dummy.matrix );
+
+              }
+
+            }
+
+          }
+
+          scene.add( mesh );
+
+        } );
+
+      } );
+
+      window.addEventListener( 'resize', onWindowResize, false );
+
+    }
+
+    function onWindowResize() {
+
+      topcamera.aspect = window.innerWidth / window.innerHeight;
+      topcamera.updateProjectionMatrix();
+      maincamera.aspect = window.innerWidth / window.innerHeight;
+      maincamera.updateProjectionMatrix();
+      renderer.setSize( window.innerWidth, window.innerHeight );
+
+    }
+
+    function animate() {
+
+      helper.update();
+      renderer.render( scene, maincamera );
+      requestAnimationFrame( animate );
+
+    }
+
+    //==============================
+
+    async function setupWebcam() {
+
+      if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+        navigator.mediaDevices.getUserMedia( { video: true } ).then( function ( stream ) {
+          video.srcObject = stream;
+          video.play();
+        });
+      }
+      return new Promise((resolve) => {
+        video.onloadedmetadata = () => {
+          video.play();
+          videoWidth = video.videoWidth;
+          videoHeight = video.videoHeight;
+          video.width = videoWidth;
+          video.height = videoHeight;
+          resolve(video);
+        };
+      });
+    }
+
+    var video = document.getElementById('video');
+    var position0, fov0, webcam, screenDist, eyeDist;
+    var position1;
+    var whitebox, screen;
+
+    function initControl( video, camera, screenDistance, camFov, eyeDistance ) {
+
+      screenDist = screenDistance;
+      eyeDist = eyeDistance * video.width;
+      position0 = camera.position.clone();
+      fov0 = camera.fov;
+
+      // set webcam
+      webcam = new THREE.PerspectiveCamera( camFov, video.width / video.height, screenDist )
+      var p = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( camera.quaternion )
+          .multiplyScalar( screenDist ).add( camera.position );
+      webcam.position.copy( p );
+      webcam.lookAt( new THREE.Vector3( 0, 0, -1 ).applyQuaternion( camera.quaternion ).negate().add( camera.position ) );
+
+      // cam rigs
+      var group = new THREE.Group();
+      group.add( webcam );
+      scene.add( group );
+      var helper = new THREE.CameraHelper( webcam );
+      scene.add( helper );
+      scene.add( mesh );
+
+      // sceen plane
+      // var size = 2 * screenDist * Math.sin( .5 * camera.fov );
+      // var plane = new THREE.PlaneBufferGeometry( size, size );
+      // var mat = new THREE.MeshBasicMaterial();
+      // screen = new THREE.Mesh( plane, mat );
+      // screen.position.copy( webcam.position );
+      // screen.lookAt( position0 );
+      // scene.add( screen );
+
+      // whitebox
+      // var geom = new THREE.BoxBufferGeometry( 1, 1, 1 );
+      // whitebox = new THREE.Mesh( geom, mat );
+      // whitebox.position.copy( position0 );
+      // scene.add( whitebox );
+
+    }
+
+    async function setupPage () {
+      await setupWebcam();
+
+      canvas = document.getElementById('face');
+      canvas.width = videoWidth;
+      canvas.height = videoHeight;
+      ctx = canvas.getContext('2d');
+      ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+
+      model = await blazeface.load();
+      initControl( video, maincamera, 8, 35, 0.23 );
+      renderPrediction();
+    };
+
+    async function renderPrediction() {
+      var predictions = await model.estimateFaces(video, false, true, true);
+
+      if (predictions.length > 0) {
+        var landmarks = predictions[0].landmarks;
+        var p0 = new THREE.Vector2( landmarks[ 0 ][ 0 ], landmarks[ 0 ][ 1 ] );
+        var p1 = new THREE.Vector2( landmarks[ 1 ][ 0 ], landmarks[ 1 ][ 1 ] );
+        var d = p0.distanceTo( p1 ) * 0.32;
+
+
+        // update 2d canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'lime';
+        ctx.beginPath();
+        ctx.ellipse( p0.x, p0.y, d, d, 0, 0, 2 * Math.PI );
+        ctx.ellipse( p1.x, p1.y, d, d, 0, 0, 2 * Math.PI );
+        ctx.fill();
+        ctx.fillStyle = 'black';
+        ctx.font = Math.round( d * 1.7 ) + 'px serif';
+        ctx.fillText( '$', p0.x - d * .5, p0.y + d * .5 );
+        ctx.fillText( '$', p1.x - d * .5, p1.y + d * .5 );
+
+        d = d * 0.45;
+        var headDist = screenDist * eyeDist / d;
+        var thirdEye = p0.clone().add( p1 ).multiplyScalar( 0.5 );
+        thirdEye.divide( new THREE.Vector2( video.width, video.height ).multiplyScalar( - 0.5 ) ).add( new THREE.Vector2( 1, 1 ) );
+
+        var ray = new THREE.Ray();
+        ray.origin.setFromMatrixPosition( webcam.matrixWorld );
+        ray.direction.set( thirdEye.x, thirdEye.y, 0.5 ).unproject( webcam ).sub( ray.origin ).normalize();
+
+        headDist *= .06;
+        var headPos = new THREE.Vector3();
+        ray.at( headDist, headPos );
+
+        maincamera.position.copy( headPos );
+        maincamera.lookAt( webcam.position );
+        maincamera.fov = 6 * fov0 / headDist;
+        maincamera.updateProjectionMatrix();
+
+      }
+
+      requestAnimationFrame(renderPrediction);
+    };
+
+    setupPage();
+  </script>
+
+</body>
+</html>

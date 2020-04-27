@@ -1,6 +1,10 @@
 # parallax-effect
 
-Image-Based 3D Display with Motion Parallax using Face Tracking. ([example](https://munrocket.github.io/parallax-effect/index.html))
+Parallax effect for web using face tracking.
+
+### Examples
+* [for background](https://munrocket.github.io/parallax-effect/index.html)
+* [for three.js](https://munrocket.github.io/parallax-effect/threejs.html)
 
 ### Usage
 ```js
