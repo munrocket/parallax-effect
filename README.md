@@ -2,15 +2,13 @@
 
 Parallax effect in javascript using face tracking.
 
-### Motivation
-
 ### Examples
 * [for background](https://munrocket.github.io/parallax-tracking/examples/background.html)
 * [for three.js](https://munrocket.github.io/parallax-tracking/examples/threejs.html)
 
 ### Installation
 ```shell
-npm i parallax-tracking ( not published yet )
+// under construction.
 ```
 
 ### Usage
@@ -20,6 +18,15 @@ npm i parallax-tracking ( not published yet )
     console.log( pos );
   });
 ```
+
+### Roadmap
+
+- [x] simple three.js demo
+- [x] simple background demo
+- [ ] proper oblique projection for three.js
+- [ ] make a better API
+- [ ] gyroscope / mouse fallback
+- [ ] scroll
 
 ### References
 
