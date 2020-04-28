@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (global = global || self, factory(global.ParallaxEffect = {}));
+    (global = global || self, factory(global.ParallaxTracking = {}));
 }(this, (function (exports) { 'use strict';
 
     /**
@@ -313,9 +313,10 @@
 
     re$1('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@latest/dist/tfjs-backend-wasm.wasm');
 
-    let model, video, updateFun;
+    let video, model, eyeDist, pushFun;
 
-    async function setupWebcam(video) {
+    async function setupWebcam() {
+      video = document.createElement('video');
       if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
         navigator.mediaDevices.getUserMedia( { video: true } ).then( function ( stream ) {
           video.srcObject = stream;
@@ -332,13 +333,14 @@
       });
     }
 
-    async function init(videoElement, screenDistance, eyeDiststance, updateFunction){
-      video = videoElement;
-      updateFun = updateFunction;
+    async function init(pushFunction, eyeDiststance = 0.13){
+      pushFun = pushFunction;
+      eyeDist = eyeDiststance;
 
-      await setupWebcam(video);
+      await setupWebcam();
       rn('wasm').then(async () => {
         model = await load();
+        model.scoreThreshold = 0.85;
         requestAnimationFrame(render);
       });
     }
@@ -350,27 +352,17 @@
         var landmarks = estimation[0].landmarks;
         var eye1 = { x: landmarks[ 0 ][ 0 ] / video.width, y: landmarks[ 0 ][ 1 ] / video.height };
         var eye2 = { x: landmarks[ 1 ][ 0 ] / video.width, y: landmarks[ 1 ][ 1 ] / video.height };
-        var eye3 = { x: (eye1.x + eye2.x) / 2, y: (eye1.y + eye2.y) / 2 };
+        var view = { x: (eye1.x + eye2.x) - 1, y: 1 - (eye1.y + eye2.y) };
 
         var dx = eye2.x - eye1.x;
         var dy = eye2.y - eye1.y;
+        var d = Math.sqrt(dx*dx + dy*dy);
+        var headDist = eyeDist / d;
 
-        // var ray = new THREE.Ray();
-        // ray.origin.setFromMatrixPosition( webcam.matrixWorld );
-        // ray.direction.set( eyePos.x, eyePos.y, 0.5 ).unproject( webcam ).sub( ray.origin ).normalize();
-
-        // headDist *= .06;
-        // var headPos = new THREE.Vector3();
-        // ray.at( headDist, headPos );
-
-        // maincamera.position.copy( headPos );
-        // maincamera.lookAt( webcam.position );
-        // maincamera.fov = 6 * fov0 / headDist;
-        // maincamera.updateProjectionMatrix();
-        updateFun(eye3);
+        pushFun(view, headDist);
       }
 
-      requestAnimationFrame(render);
+      requestAnimationFrame(render, headDist);
     }
 
     exports.init = init;

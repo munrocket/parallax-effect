@@ -38,7 +38,7 @@
       max-height: 45vh;
       max-width: 55vw;
     }
-    #video {
+    video {
       display: none;
       position: fixed;
       top: 0;
@@ -53,7 +53,7 @@
 </head>
 <body>
   <div class="horisontal">
-    <div class="vertical">
+    <div id="planet" class="vertical">
 
       <h1>TURN ON WEBCAM AND</h1>
       <img src="res/moon.png">
@@ -62,19 +62,15 @@
     </div>
   </div>
 
-  <!-- refactor to js -->
-  <video id="video" autoplay></video>
-
-  <script src="../dist/parallax-effect.js"></script>
+  <script src="../dist/parallax-tracking.js"></script>
 
   <script>
-    let video = document.getElementById('video');
-
-    async function init() {
-      await ParallaxEffect.init(video, 8, 0.32, (x) => { console.log(x) });
-    }
-
-    init();
+    var body = document.body;
+    ParallaxTracking.init(( pos ) => {
+      body.style.backgroundPositionX = 5 * pos.x + 'em ';
+      body.style.backgroundPositionY = 5 * pos.y + 'em ';
+      console.log(pos);
+    });
   </script>
 
 </body>

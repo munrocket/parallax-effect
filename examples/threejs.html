@@ -277,6 +277,7 @@
 
 
         // update 2d canvas
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'lime';
         ctx.beginPath();
@@ -292,6 +293,8 @@
         var headDist = screenDist * eyeDist / d;
         var thirdEye = p0.clone().add( p1 ).multiplyScalar( 0.5 );
         thirdEye.divide( new THREE.Vector2( video.width, video.height ).multiplyScalar( - 0.5 ) ).add( new THREE.Vector2( 1, 1 ) );
+
+        //threejs stuff
 
         var ray = new THREE.Ray();
         ray.origin.setFromMatrixPosition( webcam.matrixWorld );

@@ -1,14 +1,24 @@
-# parallax-effect
+# parallax-tracking
 
-Parallax effect for web using face tracking.
+Parallax effect in javascript using face tracking.
+
+### Motivation
 
 ### Examples
-* [for background](https://munrocket.github.io/parallax-effect/index.html)
-* [for three.js](https://munrocket.github.io/parallax-effect/threejs.html)
+* [for background](https://munrocket.github.io/parallax-tracking/examples/background.html)
+* [for three.js](https://munrocket.github.io/parallax-tracking/examples/threejs.html)
+
+### Installation
+```shell
+npm i parallax-tracking ( not published yet )
+```
 
 ### Usage
 ```js
-// under construction
+  import ParallaxTracking from 'parallax-tracking';
+  ParallaxTracking.init(( pos ) => {
+    console.log( pos );
+  });
 ```
 
 ### References
