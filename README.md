@@ -5,7 +5,7 @@ Parallax effect in javascript using face tracking. Can be a good improvement for
 ### Examples
 * [background](https://munrocket.github.io/parallax-view/examples/background.html)
 * [Three.js](https://munrocket.github.io/parallax-view/examples/threejs.html)
-* [deepview](https://munrocket.github.io/parallax-view/examples/immersive.html)
+* [deepview](https://munrocket.github.io/parallax-view/examples/deepview.html)
 
 ### Installation
 // under construction
