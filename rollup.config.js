@@ -5,7 +5,7 @@ import resolve from 'rollup-plugin-node-resolve';
 
 export default [
   {
-    input: 'src/parallax-tracking.js',
+    input: 'src/parallax-view.js',
     output: [
       { file: pkg.browser, name: 'Parallax', format: 'umd' },
       { file: pkg.module, name: 'Parallax', format: 'esm' }

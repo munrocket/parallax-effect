@@ -1,10 +1,10 @@
 {
-  "name": "parallax-tracking",
+  "name": "parallax-view",
   "version": "0.0.1",
-  "description": "Parallax effect for web using face tracking. Image-based 3d display with tfjs.",
-  "main": "src/parallax-tracking.js",
-  "browser": "dist/parallax-tracking.js",
-  "module": "dist/parallax-tracking.esm.js",
+  "description": "Parallax effect for web using face view. Image-based 3d display with tfjs.",
+  "main": "src/parallax-view.js",
+  "browser": "dist/parallax-view.js",
+  "module": "dist/parallax-view.esm.js",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw",
@@ -26,7 +26,7 @@
     "3d",
     "display",
     "face",
-    "tracking",
+    "view",
     "motion",
     "wallpaper",
     "background"

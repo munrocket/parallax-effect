@@ -38,16 +38,10 @@
       import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/OrbitControls.js';
 
       const data = {
-        "baseUrl": "https://cdn.glitch.com/e6e6edef-3278-4ba0-812c-44e4b4eebb73%2F",
-        //"baseUrl": "https://storage.googleapis.com/immersive-lf-video-siggraph2020/face-paint/msi/rgba_000.png",
-        "rgba": "texture_atlas_rgba.png",
-        "layer0Mesh": "mdi_rig_space_mesh_000.ply",
-        "numLayers": 16,
-        "lutUrl": "../lut.png",
-        "near": 0.8,
-        "far": 1000.0
-      };
-      
+        "atlas": "res/paint/texture_atlas_rgba.png",
+        "rigs": "res/paint/mdi_rig_space_mesh_000.ply",
+        "numLayers": 16
+      };      
 
 			let camera, scene, renderer;
 
@@ -75,30 +69,21 @@
         controls.rotateSpeed = 0.25;
         controls.screenSpacePanning = true;
         controls.target.set( 0, 1.6, -1 );
-        controls.update(); // grrr
+        controls.update();
 
-        window.addEventListener('mousedown', () => {
-          console.log(controls);
-        })
-        
-        const texture = new THREE.TextureLoader()
-          .setPath( data.baseUrl)
-          .load( data.rgba );
+        const texture = new THREE.TextureLoader().load( data.atlas );
         texture.flipY = false;
         texture.generateMipmaps = false;
         texture.wrapS = THREE.ClampToEdgeWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
         texture.minFilter = THREE.LinearFilter;
-
         const material = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
         
         const loader = new PLYLoader();
-        loader.setPath( data.baseUrl );
         
         for ( let i = 0; i < data.numLayers; i ++ ) {
           
-          const url = data.layer0Mesh.replace( '000', i.toString().padStart( 3, '0' ) );
-
+          const url = data.rigs.replace( '000', i.toString().padStart( 3, '0' ) );
           loader.load( url, function ( geometry ) {
             
             const mesh = new THREE.Mesh( geometry, material );

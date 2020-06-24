@@ -1,19 +1,19 @@
-# parallax-tracking
+# parallax-view
 
-Parallax effect in javascript using face tracking.
+Parallax effect in javascript using face view.
 
 ### Examples
-* [background](https://munrocket.github.io/parallax-tracking/examples/background.html)
-* [Three.js](https://munrocket.github.io/parallax-tracking/examples/threejs.html)
-* [deepview](https://munrocket.github.io/parallax-tracking/examples/immersive.html)
+* [background](https://munrocket.github.io/parallax-view/examples/background.html)
+* [Three.js](https://munrocket.github.io/parallax-view/examples/threejs.html)
+* [deepview](https://munrocket.github.io/parallax-view/examples/immersive.html)
 
 ### Installation
-Temporary without package. Copy `dist/parallax-tracking[.esm].js` into repo.
+Temporary without package. Copy `dist/parallax-view[.esm].js` into repo.
 
 ### Usage
 In script tag
 ```js
-  <script src="../dist/parallax-tracking.js"></script>
+  <script src="../dist/parallax-view.js"></script>
   <script>
     Parallax.init( position => {
       console.log( position );
@@ -24,7 +24,7 @@ In script tag
 ```
 In ES modules
 ```js
-  import { init as ParallaxInit } from '../dist/parallax-tracking.esm.js';
+  import { init as ParallaxInit } from '../dist/parallax-view.esm.js';
   ParallaxInit( position => {
     console.log( position );
   }).then( isInited => {
