@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>DeepView VR</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #808080;
+				color: #fff;
+				margin: 0;
+			}
+      canvas {
+        display: block;
+      }
+      
+			a {
+				color: #ff4;
+			}
+      #info {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+      }
+		</style>
+	</head>
+	<body>
+    <div id="info">
+      Immersive Light Field<br/> 
+      <a href="https://augmentedperception.github.io/deepviewvideo/" target="_blank">SIGGRAPH 2020 Technical Paper</a>
+    </div>
+		<script type="module">
+      
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.117.1/build/three.module.js';
+      import { PLYLoader } from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/loaders/PLYLoader.js';
+      import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/OrbitControls.js';
+
+      const data = {
+        "baseUrl": "https://cdn.glitch.com/e6e6edef-3278-4ba0-812c-44e4b4eebb73%2F",
+        //"baseUrl": "https://storage.googleapis.com/immersive-lf-video-siggraph2020/face-paint/msi/rgba_000.png",
+        "rgba": "texture_atlas_rgba.png",
+        "layer0Mesh": "mdi_rig_space_mesh_000.ply",
+        "numLayers": 16,
+        "lutUrl": "../lut.png",
+        "near": 0.8,
+        "far": 1000.0
+      };
+      
+
+			let camera, scene, renderer;
+
+			init();
+			animate();
+
+			function init() {
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+        
+        //
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0x808080 );
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 100 );
+        camera.position.set( 0, 1.6, 0 );
+        
+        var controls = new OrbitControls( camera, renderer.domElement );
+        controls.rotateSpeed = 0.25;
+        controls.screenSpacePanning = true;
+        controls.target.set( 0, 1.6, -1 );
+        controls.update(); // grrr
+
+        window.addEventListener('mousedown', () => {
+          console.log(controls);
+        })
+        
+        const texture = new THREE.TextureLoader()
+          .setPath( data.baseUrl)
+          .load( data.rgba );
+        texture.flipY = false;
+        texture.generateMipmaps = false;
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.minFilter = THREE.LinearFilter;
+
+        const material = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
+        
+        const loader = new PLYLoader();
+        loader.setPath( data.baseUrl );
+        
+        for ( let i = 0; i < data.numLayers; i ++ ) {
+          
+          const url = data.layer0Mesh.replace( '000', i.toString().padStart( 3, '0' ) );
+
+          loader.load( url, function ( geometry ) {
+            
+            const mesh = new THREE.Mesh( geometry, material );
+            mesh.position.y = 1.6;
+            mesh.rotation.x = Math.PI;
+            mesh.renderOrder = i;
+            scene.add( mesh );
+            
+          } );
+          
+        }
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function animate() {
+
+				renderer.setAnimationLoop( render );
+
+			}
+
+			function render() {
+  
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
+</html>
