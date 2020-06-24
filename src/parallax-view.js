@@ -4,15 +4,15 @@ import { setWasmPath } from '@tensorflow/tfjs-backend-wasm';
 setWasmPath('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@1.7.4/dist/tfjs-backend-wasm.wasm');
 
 let video, model, eyes, dist;
-let _push, _ = {};
+let param = {};
 
 export function init(pushUpdate, settings = {}) {
-  _push = pushUpdate;
-  _.smoothE = 0.8;
-  _.smoothD = 0.3;
-  _.eyeDist = 0.13;
-  _.scoreThreshold = 0.85;
-  Object.assign(_, settings);
+  param.pushUpdate = pushUpdate;
+  param.smoothE = 0.8;
+  param.smoothD = 0.3;
+  param.eyeDist = 0.13;
+  param.scoreThreshold = 0.85;
+  Object.assign(param, settings);
 
   video = document.createElement('video');
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -26,7 +26,7 @@ export function init(pushUpdate, settings = {}) {
           video.height = video.videoHeight;
           setBackend('wasm').finally(async () => {
             model = await blazeface();
-            model.scoreThreshold = _.scoreThreshold;
+            model.scoreThreshold = param.scoreThreshold;
             requestAnimationFrame(render);
             resolve(true);
           });
@@ -47,8 +47,8 @@ export async function render() {
       eyes = nextEyes;
     } else {
       for (let i = 0; i < 4; ++i) {
-        eyes[i] *= 1 - _.smoothE;
-        eyes[i] += nextEyes[i] * _.smoothE;
+        eyes[i] *= 1 - param.smoothE;
+        eyes[i] += nextEyes[i] * param.smoothE;
       }
     }
     let view = {
@@ -62,12 +62,12 @@ export async function render() {
     if (typeof dist == 'undefined') {
       dist = nextDist;
     } else {
-      dist *= 1 - _.smoothD;
-      dist += nextDist * _.smoothD;
+      dist *= 1 - param.smoothD;
+      dist += nextDist * param.smoothD;
     }
-    let headDist = (_.eyeDist * video.width) / dist;
+    let headDist = (param.eyeDist * video.width) / dist;
 
-    _push(view, headDist);
+    param.pushUpdate(view, headDist);
   }
   requestAnimationFrame(render);
 }

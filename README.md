@@ -1,6 +1,6 @@
 # parallax-view
 
-Parallax effect in javascript using face view.
+Parallax effect in javascript using face tracking. Can be a good improvement for Immersive light field video ([DeepView](https://augmentedperception.github.io/deepviewvideo/)).
 
 ### Examples
 * [background](https://munrocket.github.io/parallax-view/examples/background.html)
@@ -8,7 +8,7 @@ Parallax effect in javascript using face view.
 * [deepview](https://munrocket.github.io/parallax-view/examples/immersive.html)
 
 ### Installation
-Temporary without package. Copy `dist/parallax-view[.esm].js` into repo.
+// under construction
 
 ### Usage
 In script tag
@@ -24,8 +24,8 @@ In script tag
 ```
 In ES modules
 ```js
-  import { init as ParallaxInit } from '../dist/parallax-view.esm.js';
-  ParallaxInit( position => {
+  import { init as parallaxInit } from '../dist/parallax-view.esm.js';
+  parallaxInit( position => {
     console.log( position );
   }).then( isInited => {
     console.log( isInited );
@@ -36,7 +36,7 @@ In ES modules
 
 - [x] simple three.js demo
 - [x] simple background demo
-- [ ] gyroscope / mouse fallback
+- [ ] mouse / gyroscope fallback
 
 ### References
 
