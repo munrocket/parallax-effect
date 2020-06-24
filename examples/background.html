@@ -65,11 +65,10 @@
   <script src="../dist/parallax-tracking.js"></script>
 
   <script>
-    var body = document.body;
-    ParallaxTracking.init(( pos ) => {
+    let body = document.body;
+    Parallax.init(( pos ) => {
       body.style.backgroundPositionX = 5 * pos.x + 'em ';
       body.style.backgroundPositionY = 5 * pos.y + 'em ';
-      console.log(pos);
     });
   </script>
 

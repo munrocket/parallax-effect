@@ -3,18 +3,26 @@
 Parallax effect in javascript using face tracking.
 
 ### Examples
-* [for background](https://munrocket.github.io/parallax-tracking/examples/background.html)
-* [for three.js](https://munrocket.github.io/parallax-tracking/examples/threejs.html)
+* [background](https://munrocket.github.io/parallax-tracking/examples/background.html)
+* [Three.js](https://munrocket.github.io/parallax-tracking/examples/threejs.html)
 
 ### Installation
-```shell
-// under construction.
-```
+Temporary without package. Copy `dist/parallax-tracking.js` into repo.
 
 ### Usage
+In script tag
 ```js
-  import ParallaxTracking from 'parallax-tracking';
-  ParallaxTracking.init(( pos ) => {
+  <script src="../dist/parallax-tracking.js"></script>
+  <script>
+    Parallax.init(( pos ) => {
+      console.log( pos );
+    });
+  </script>
+```
+In ES modules
+```js
+  import { init as ParallaxInit } from '../dist/parallax-tracking.esm.js';
+  ParallaxInit(( pos ) => {
     console.log( pos );
   });
 ```
@@ -23,10 +31,7 @@ Parallax effect in javascript using face tracking.
 
 - [x] simple three.js demo
 - [x] simple background demo
-- [ ] proper oblique projection for three.js
-- [ ] make a better API
 - [ ] gyroscope / mouse fallback
-- [ ] scroll
 
 ### References
 

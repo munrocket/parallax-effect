@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
   <title>Document</title>
   <style>
     body {
@@ -55,27 +56,27 @@
 
   <script>
 
-    var topcamera, scene, renderer, mesh;
+    let topcamera, scene, renderer, mesh;
 
-    var helper;
+    let helper;
 
     init();
     animate();
 
-    var seed = 0.016;
+    let seed = 0.016;
     Math.random = function () {
 
-      var x = Math.sin( seed ++ ) * 10000;
+      let x = Math.sin( seed ++ ) * 10000;
       return x - Math.floor( x );
 
     };
 
     function init() {
 
-      var dummy = new THREE.Object3D();
-      var xCount = 5;
-      var yCount = 15;
-      var count = xCount * yCount;
+      let dummy = new THREE.Object3D();
+      let xCount = 5;
+      let yCount = 15;
+      let count = xCount * yCount;
 
       renderer = new THREE.WebGLRenderer( { antialias: true } );
       renderer.setPixelRatio( window.devicePixelRatio );
@@ -93,23 +94,23 @@
       topcamera.lookAt( 0, 0, 0 );
 
       helper = new THREE.CameraHelper( maincamera );
-      scene.add( helper );
+      //scene.add( helper );
 
-      var cameraRig = new THREE.Group();
+      let cameraRig = new THREE.Group();
       cameraRig.add( maincamera );
       scene.add( cameraRig );
 
       new THREE.GLTFLoader().load( 'res/head.glb', function ( gltf ) {
 
-        var instanceColors = [];
+        let instanceColors = [];
 
-        for ( var i = 0; i < 3 * count; i ++ ) {
+        for ( let i = 0; i < 3 * count; i ++ ) {
 
           instanceColors.push( Math.random() );
 
         }
 
-        var geometry = gltf.scene.children[ 0 ].geometry;
+        let geometry = gltf.scene.children[ 0 ].geometry;
         geometry.setAttribute( 'instanceColor', new THREE.InstancedBufferAttribute( new Float32Array( instanceColors ), 3 ) );
         geometry.computeVertexNormals();
         geometry.scale( 0.5, 0.5, 0.5 );
@@ -117,7 +118,7 @@
         new THREE.TextureLoader().load( 'res/matcap.jpg', function ( texture ) {
 
           texture.encoding = THREE.sRGBEncoding;
-          var material = new THREE.MeshMatcapMaterial( { color: 0xaaaaff, matcap: texture } );
+          let material = new THREE.MeshMatcapMaterial( { color: 0xaaaaff, matcap: texture } );
 
           material.onBeforeCompile = function ( shader ) {
 
@@ -140,13 +141,13 @@
 
           if ( mesh ) {
 
-            var i = 0;
-            var xoffset = 5;
-            var yoffset = 4;
+            let i = 0;
+            let xoffset = 5;
+            let yoffset = 4;
 
-            for ( var x = 0; x < xCount; x ++ ) {
+            for ( let x = 0; x < xCount; x ++ ) {
 
-              for ( var z = 0; z < yCount; z ++ ) {
+              for ( let z = 0; z < yCount; z ++ ) {
 
                 dummy.position.set( xoffset * ( xCount / 2 - x - 0.5 ), 0, - yoffset * z );
                 dummy.updateMatrix();
@@ -180,7 +181,7 @@
 
     function animate() {
 
-      helper.update();
+      //helper.update();
       renderer.render( scene, maincamera );
       requestAnimationFrame( animate );
 
@@ -208,10 +209,10 @@
       });
     }
 
-    var video = document.getElementById('video');
-    var position0, fov0, webcam, screenDist, eyeDist;
-    var position1;
-    var whitebox, screen;
+    let video = document.getElementById('video');
+    let position0, fov0, webcam, screenDist, eyeDist;
+    let position1;
+    let whitebox, screen;
 
     function initControl( video, camera, screenDistance, camFov, eyeDistance ) {
 
@@ -222,30 +223,30 @@
 
       // set webcam
       webcam = new THREE.PerspectiveCamera( camFov, video.width / video.height, screenDist )
-      var p = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( camera.quaternion )
+      let p = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( camera.quaternion )
           .multiplyScalar( screenDist ).add( camera.position );
       webcam.position.copy( p );
       webcam.lookAt( new THREE.Vector3( 0, 0, -1 ).applyQuaternion( camera.quaternion ).negate().add( camera.position ) );
 
       // cam rigs
-      var group = new THREE.Group();
+      let group = new THREE.Group();
       group.add( webcam );
       scene.add( group );
-      var helper = new THREE.CameraHelper( webcam );
-      scene.add( helper );
+      let helper = new THREE.CameraHelper( webcam );
+      //scene.add( helper );
       scene.add( mesh );
 
       // sceen plane
-      // var size = 2 * screenDist * Math.sin( .5 * camera.fov );
-      // var plane = new THREE.PlaneBufferGeometry( size, size );
-      // var mat = new THREE.MeshBasicMaterial();
+      // let size = 2 * screenDist * Math.sin( .5 * camera.fov );
+      // let plane = new THREE.PlaneBufferGeometry( size, size );
+      // let mat = new THREE.MeshBasicMaterial();
       // screen = new THREE.Mesh( plane, mat );
       // screen.position.copy( webcam.position );
       // screen.lookAt( position0 );
       // scene.add( screen );
 
       // whitebox
-      // var geom = new THREE.BoxBufferGeometry( 1, 1, 1 );
+      // let geom = new THREE.BoxBufferGeometry( 1, 1, 1 );
       // whitebox = new THREE.Mesh( geom, mat );
       // whitebox.position.copy( position0 );
       // scene.add( whitebox );
@@ -266,14 +267,30 @@
       renderPrediction();
     };
 
+    let dist = null;
+    let eye0 = null;
+    let eye1 = null;
+    let distSmooth = 0.2;
+    let eyeSmooth = 0.7;
+
     async function renderPrediction() {
-      var predictions = await model.estimateFaces(video, false, true, true);
+      let predictions = await model.estimateFaces(video, false, true, true);
 
       if (predictions.length > 0) {
-        var landmarks = predictions[0].landmarks;
-        var p0 = new THREE.Vector2( landmarks[ 0 ][ 0 ], landmarks[ 0 ][ 1 ] );
-        var p1 = new THREE.Vector2( landmarks[ 1 ][ 0 ], landmarks[ 1 ][ 1 ] );
-        var d = p0.distanceTo( p1 ) * 0.32;
+        let landmarks = predictions[0].landmarks;
+
+
+        let eye0C = new THREE.Vector2( landmarks[ 0 ][ 0 ], landmarks[ 0 ][ 1 ] );
+        let eye1C = new THREE.Vector2( landmarks[ 1 ][ 0 ], landmarks[ 1 ][ 1 ] );
+        if ( eye0 === null ) {
+          eye0 = eye0C;
+          eye1 = eye1C;
+        } else {
+          eye0.multiplyScalar( 1 - eyeSmooth ).add( eye0C.multiplyScalar(eyeSmooth) );
+          eye1.multiplyScalar( 1 - eyeSmooth ).add( eye1C.multiplyScalar(eyeSmooth) );
+        }
+
+        let d = eye0.distanceTo( eye1 ) * 0.32;
 
 
         // update 2d canvas
@@ -281,32 +298,36 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'lime';
         ctx.beginPath();
-        ctx.ellipse( p0.x, p0.y, d, d, 0, 0, 2 * Math.PI );
-        ctx.ellipse( p1.x, p1.y, d, d, 0, 0, 2 * Math.PI );
+        ctx.ellipse( eye0.x, eye0.y, d, d, 0, 0, 2 * Math.PI );
+        ctx.ellipse( eye1.x, eye1.y, d, d, 0, 0, 2 * Math.PI );
         ctx.fill();
         ctx.fillStyle = 'black';
         ctx.font = Math.round( d * 1.7 ) + 'px serif';
-        ctx.fillText( '$', p0.x - d * .5, p0.y + d * .5 );
-        ctx.fillText( '$', p1.x - d * .5, p1.y + d * .5 );
+        ctx.fillText( '$', eye0.x - d * .5, eye0.y + d * .5 );
+        ctx.fillText( '$', eye1.x - d * .5, eye1.y + d * .5 );
 
         d = d * 0.45;
-        var headDist = screenDist * eyeDist / d;
-        var thirdEye = p0.clone().add( p1 ).multiplyScalar( 0.5 );
+        let distC = screenDist * eyeDist / d * .06;
+        if ( dist === null) {
+          dist = distC;
+        } else {
+          dist = distC * distSmooth + dist * ( 1 - distSmooth );
+        }
+        let thirdEye = eye0.clone().add( eye1 ).multiplyScalar( 0.5 );
         thirdEye.divide( new THREE.Vector2( video.width, video.height ).multiplyScalar( - 0.5 ) ).add( new THREE.Vector2( 1, 1 ) );
 
         //threejs stuff
 
-        var ray = new THREE.Ray();
+        let ray = new THREE.Ray();
         ray.origin.setFromMatrixPosition( webcam.matrixWorld );
         ray.direction.set( thirdEye.x, thirdEye.y, 0.5 ).unproject( webcam ).sub( ray.origin ).normalize();
 
-        headDist *= .06;
-        var headPos = new THREE.Vector3();
-        ray.at( headDist, headPos );
+        let headPos = new THREE.Vector3();
+        ray.at( dist, headPos );
 
         maincamera.position.copy( headPos );
         maincamera.lookAt( webcam.position );
-        maincamera.fov = 6 * fov0 / headDist;
+        maincamera.fov = 6 * fov0 / dist;
         maincamera.updateProjectionMatrix();
 
       }

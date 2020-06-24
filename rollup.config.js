@@ -7,8 +7,8 @@ export default [
   {
     input: 'src/parallax-tracking.js',
     output: [
-      { file: pkg.browser, name: 'ParallaxTracking', format: 'umd' },
-      { file: pkg.module, name: 'ParallaxTracking', format: 'esm' }
+      { file: pkg.browser, name: 'Parallax', format: 'umd' },
+      { file: pkg.module, name: 'Parallax', format: 'esm' }
     ],
     plugins: [
       builtins(),

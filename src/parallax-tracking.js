@@ -1,56 +1,69 @@
 import { load as blazeface } from '@tensorflow-models/blazeface';
 import { setBackend } from '@tensorflow/tfjs-core';
 import { setWasmPath } from '@tensorflow/tfjs-backend-wasm';
-setWasmPath('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@latest/dist/tfjs-backend-wasm.wasm');
+setWasmPath('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@1.7.4/dist/tfjs-backend-wasm.wasm');
 
-let video, model, eyeDist, pushFun;
+let video, model, eyes, dist;
+let _pushUpdate, _ = {};
 
-async function setupWebcam() {
+export function init(pushUpdate, settings = {}) {
+  _pushUpdate = pushUpdate;
+  _.smoothE = 0.8;
+  _.smoothD = 0.3;
+  _.eyeDist = 0.13;
+  Object.assign(_, settings);
+
   video = document.createElement('video');
   if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
-    navigator.mediaDevices.getUserMedia( { video: true } ).then( function ( stream ) {
+    return navigator.mediaDevices.getUserMedia( { video: true } ).then( stream => {
       video.srcObject = stream;
       video.play();
+      return new Promise( resolve => {
+        video.onloadedmetadata = () => {
+          video.play();
+          video.width = video.videoWidth;
+          video.height = video.videoHeight;
+          setBackend('wasm').finally(async () => {
+            model = await blazeface();
+            model.scoreThreshold = 0.85;
+            requestAnimationFrame(render);
+            resolve(true);
+          });
+        };
+      });
+    }).catch( () => {
+      return false;
     });
   }
-  return new Promise((resolve) => {
-    video.onloadedmetadata = () => {
-      video.play();
-      video.width = video.videoWidth;
-      video.height = video.videoHeight;
-      resolve(video);
-    };
-  });
-}
-
-export async function init(pushFunction, eyeDiststance = 0.13){
-  pushFun = pushFunction;
-  eyeDist = eyeDiststance;
-
-  await setupWebcam(video);
-  setBackend('wasm').then(async () => {
-    model = await blazeface();
-    model.scoreThreshold = 0.85;
-    requestAnimationFrame(render);
-  });
 }
 
 export async function render() {
-  var estimation = video ? await model.estimateFaces(video, false, true, true) : 0;
+  let faces = await model.estimateFaces(video, false, true, true);
+  if (faces.length > 0) {
+    let e = faces[0].landmarks;
+    let nextEyes = [ e[0][0], e[0][1], e[1][0], e[1][1] ];
+    if (typeof eyes == 'undefined') {
+      eyes = nextEyes;
+    } else {
+      for (let i = 0; i < 4; ++i) {
+        eyes[i] *= 1 - _.smoothE;
+        eyes[i] += nextEyes[i] * _.smoothE;
+      }
+    }
+    let view = { x: (eyes[0] + eyes[2]) / video.width - 1, y: 1 - (eyes[1] + eyes[3]) / video.height };
 
-  if (estimation && estimation.length > 0) {
-    var landmarks = estimation[0].landmarks;
-    var eye1 = { x: landmarks[ 0 ][ 0 ] / video.width, y: landmarks[ 0 ][ 1 ] / video.height };
-    var eye2 = { x: landmarks[ 1 ][ 0 ] / video.width, y: landmarks[ 1 ][ 1 ] / video.height };
-    var view = { x: (eye1.x + eye2.x) - 1, y: 1 - (eye1.y + eye2.y) };
+    let dx = eyes[0] - eyes[2];
+    let dy = eyes[1] - eyes[3];
+    let nextDist = Math.sqrt(dx*dx + dy*dy);
+    if (typeof dist == 'undefined') {
+      dist = nextDist;
+    } else {
+      dist *= 1 - _.smoothD;
+      dist += nextDist * _.smoothD;
+    }
+    let headDist = _.eyeDist * video.width / dist;
 
-    var dx = eye2.x - eye1.x;
-    var dy = eye2.y - eye1.y;
-    var d = Math.sqrt(dx*dx + dy*dy);
-    var headDist = eyeDist / d;
-
-    pushFun(view, headDist);
+    _pushUpdate(view, headDist);
   }
-
-  requestAnimationFrame(render, headDist);
+  requestAnimationFrame(render);
 };
