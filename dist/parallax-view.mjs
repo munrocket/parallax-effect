@@ -312,10 +312,10 @@ let param = {};
 
 function init(pushUpdate, settings = {}) {
   param.pushUpdate = pushUpdate;
-  param.smoothE = 0.8;
-  param.smoothD = 0.3;
-  param.eyeDist = 0.13;
-  param.scoreThreshold = 0.85;
+  param.smoothEye = 0.8;
+  param.smoothDist = 0.3;
+  param.defautDist = 0.12;
+  param.threshold = 0.85;
   Object.assign(param, settings);
 
   video = document.createElement('video');
@@ -330,7 +330,7 @@ function init(pushUpdate, settings = {}) {
           video.height = video.videoHeight;
           rn('wasm').finally(async () => {
             model = await load();
-            model.scoreThreshold = param.scoreThreshold;
+            model.scoreThreshold = param.threshold;
             requestAnimationFrame(render);
             resolve(true);
           });
@@ -351,29 +351,28 @@ async function render() {
       eyes = nextEyes;
     } else {
       for (let i = 0; i < 4; ++i) {
-        eyes[i] *= 1 - param.smoothE;
-        eyes[i] += nextEyes[i] * param.smoothE;
+        eyes[i] *= 1 - param.smoothEye;
+        eyes[i] += nextEyes[i] * param.smoothEye;
       }
     }
-    let view = {
-      x: (eyes[0] + eyes[2]) / video.width - 1,
-      y: 1 - (eyes[1] + eyes[3]) / video.height,
-    };
 
     let dx = eyes[0] - eyes[2];
     let dy = eyes[1] - eyes[3];
-    let nextDist = Math.sqrt(dx * dx + dy * dy);
+    let nextDist = Math.sqrt(dx * dx + dy * dy) / video.width;
     if (typeof dist == 'undefined') {
       dist = nextDist;
     } else {
-      dist *= 1 - param.smoothD;
-      dist += nextDist * param.smoothD;
+      dist *= 1 - param.smoothDist;
+      dist += nextDist * param.smoothDist;
     }
-    let headDist = (param.eyeDist * video.width) / dist;
 
-    param.pushUpdate(view, headDist);
+    param.pushUpdate({
+      x: (eyes[0] + eyes[2]) / video.width - 1,
+      y: 1 - (eyes[1] + eyes[3]) / video.width,
+      z: param.defautDist / dist
+    });
   }
   requestAnimationFrame(render);
 }
 
-export { init, render };
+export { init };

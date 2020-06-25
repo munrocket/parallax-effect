@@ -1,10 +1,10 @@
 {
   "name": "parallax-view",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Parallax effect for web using face view. Image-based 3d display with tfjs.",
   "main": "src/parallax-view.js",
   "browser": "dist/parallax-view.js",
-  "module": "dist/parallax-view.esm.js",
+  "module": "dist/parallax-view.mjs",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw",
@@ -24,12 +24,12 @@
   },
   "keywords": [
     "3d",
+    "parallax",
+    "deepview",
     "display",
     "face",
     "view",
-    "motion",
-    "wallpaper",
-    "background"
+    "motion"
   ],
   "author": "munrocket",
   "license": "MIT"

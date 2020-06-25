@@ -1,10 +1,10 @@
 # parallax-view
 
-Parallax effect in javascript using face tracking. Can be a good improvement for Immersive light field video ([DeepView](https://augmentedperception.github.io/deepviewvideo/)).
+Parallax effect in javascript using face tracking. Can be a good improvement for 3d scenes or Immersive Light Field Videos.
 
 ### Examples
 * [background](https://munrocket.github.io/parallax-view/examples/background.html)
-* [Three.js](https://munrocket.github.io/parallax-view/examples/threejs.html)
+* [three.js](https://munrocket.github.io/parallax-view/examples/threejs.html)
 * [deepview](https://munrocket.github.io/parallax-view/examples/deepview.html)
 
 ### Installation
@@ -24,7 +24,7 @@ In script tag
 ```
 In ES modules
 ```js
-  import { init as parallaxInit } from '../dist/parallax-view.esm.js';
+  import { init as parallaxInit } from '../dist/parallax-view.mjs';
   parallaxInit( position => {
     console.log( position );
   }).then( isInited => {
@@ -34,10 +34,11 @@ In ES modules
 
 ### Roadmap
 
-- [x] simple three.js demo
-- [x] simple background demo
+- [x] background demo
+- [x] three.js demo
+- [x] deepview demo
 - [ ] mouse / gyroscope fallback
 
 ### References
 
-1. Eric Lengyel. *Mathematics for 3D game programming and computer graphics* p. 120
+1. Eric Lengyel. *Oblique View Frustum Depth Projection and Clipping* [[url](https://www.semanticscholar.org/paper/Oblique-View-Frustum-Depth-Projection-and-Clipping-Lengyel/d4a4128a62e3ed060776b90a7e67c095e441b32d)]
