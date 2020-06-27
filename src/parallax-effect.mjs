@@ -15,10 +15,10 @@ export function init(pushUpdate, settings = {}) {
   Object.assign(param, settings);
 
   video = document.createElement('video');
+  video.playsInline = true;
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     return navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
       video.srcObject = stream;
-      video.play();
       return new Promise((resolve) => {
         video.onloadedmetadata = () => {
           video.play();

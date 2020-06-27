@@ -1,10 +1,10 @@
 {
-  "name": "parallax-view",
+  "name": "parallax-effect",
   "version": "1.0.0",
-  "description": "Parallax effect for web using face view. Image-based 3d display with tfjs.",
-  "main": "src/parallax-view.js",
-  "browser": "dist/parallax-view.js",
-  "module": "dist/parallax-view.mjs",
+  "description": "Parallax effect for web using face tracking. Image-based 3d display with tfjs.",
+  "main": "src/parallax-effect.js",
+  "browser": "dist/parallax-effect.js",
+  "module": "dist/parallax-effect.mjs",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw",
@@ -17,7 +17,7 @@
     "@tensorflow/tfjs-core": "^1.7.4"
   },
   "devDependencies": {
-    "rollup": "^2.18.0",
+    "rollup": "^2.18.1",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-resolve": "^5.2.0",
     "servez": "^1.10.0"
@@ -28,6 +28,7 @@
     "deepview",
     "display",
     "face",
+    "tracking",
     "view",
     "motion"
   ],
