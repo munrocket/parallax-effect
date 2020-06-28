@@ -21,30 +21,33 @@ export function init(pushUpdate, settings = {}) {
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     return navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
       fetchInject([
+        opt.modelUrl
+      ], fetchInject([
+        opt.convUrl,
         opt.wasmUrl
       ], fetchInject([
-        opt.tfUrl,
-        opt.modelUrl,
-        opt.convUrl
-      ])).then(() => {
-        tf.wasm.setWasmPath(opt.wasmPath);
+        opt.tfUrl
+      ]))).then(() => {
         return new Promise((resolve) => {
           video.srcObject = stream;
           video.play();
           video.onloadedmetadata = () => {
             video.width = video.videoWidth;
             video.height = video.videoHeight;
-            tf.setBackend('wasm').finally(async () => {
+            tf.wasm.setWasmPath(opt.wasmPath);
+            tf.setBackend('wasm').then(async () => {
               model = await blazeface.load();
               model.scoreThreshold = opt.threshold;
               requestAnimationFrame(render);
-              resolve(true);
+              resolve(0);
+            }).catch(() => {
+              resolve(1);
             });
           };
         });
       });
     }).catch(() => {
-      return false;
+      return 2;
     });
   }
 }

@@ -83,7 +83,11 @@
           IM.elements[2] += 0.1 * view.x;
           IM.elements[6] += 0.1 * view.y;
           PM.getInverse( IM );
-        })
+        }).then( errorCode => {
+          if (errorCode) {
+            alert('TFJS not loaded! ErrorCode=' + errorCode);
+          }
+        });
 
         //
 

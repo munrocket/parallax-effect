@@ -42,8 +42,8 @@ Parallax.init(
     defautDist: 0.12,
     threshold = 0.85
   }
-).then( isInited => {
-  console.log( isInited );
+).then( errorCode => {
+  console.log( errorCode );
 });
 ```
 

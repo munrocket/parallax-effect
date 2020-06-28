@@ -72,6 +72,10 @@
     Parallax.init(( pos ) => {
       body.style.backgroundPositionX = 5 * pos.x + 'em ';
       body.style.backgroundPositionY = 5 * pos.y + 'em ';
+    }).then( errorCode => {
+      if (errorCode) {
+        alert('TFJS not loaded! ErrorCode=' + errorCode);
+      }
     });
   </script>
 
