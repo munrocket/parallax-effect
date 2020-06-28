@@ -1,15 +1,18 @@
 # parallax-effect
 
-Parallax effect in javascript using face tracking. Can be a good improvement for 3d scenes or Immersive Light Field Videos.
+Parallax view in javascript using face tracking. Can be a good improvement for 3d scenes.
 
 ### Examples
 * [background](https://munrocket.github.io/parallax-effect/examples/background.html)
 * [three.js](https://munrocket.github.io/parallax-effect/examples/threejs.html)
 * [deepview](https://munrocket.github.io/parallax-effect/examples/deepview.html)
+* [deepview2](https://munrocket.github.io/parallax-effect/examples/deepview2.html)
+
+![](https://habrastorage.org/webt/oo/pp/go/ooppgoh3zon1kh9sxi_7urttdwy.gif)
 
 ### Installation
 
-Install package `npm i parallax-effect` and add it as ES module
+Run `npm install parallax-effect` and import it as ES module
 ```js
   import { init as parallaxInit } from '../dist/parallax-effect.mjs';
   parallaxInit( position => {
@@ -26,7 +29,7 @@ or add it in script tag
   </script>
 ```
 
-### Custom usage
+### Usage
 Position is 3d vector where x/y in range [-0.5, 0.5] and z is positive, you can change settings (smoothing, default distance between eyes) or check for successfull init.
 ```js
 Parallax.init(
