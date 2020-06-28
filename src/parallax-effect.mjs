@@ -1,36 +1,46 @@
-import { load as blazeface } from '@tensorflow-models/blazeface';
-import { setBackend } from '@tensorflow/tfjs-core';
-import { setWasmPath } from '@tensorflow/tfjs-backend-wasm';
-setWasmPath('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@1.7.4/dist/tfjs-backend-wasm.wasm');
+import fetchInject from 'fetch-inject';
 
 let video, model, eyes, dist;
-let param = {};
+let opt = {};
 
 export function init(pushUpdate, settings = {}) {
-  param.pushUpdate = pushUpdate;
-  param.smoothEye = 0.8;
-  param.smoothDist = 0.3;
-  param.defautDist = 0.12;
-  param.threshold = 0.85;
-  Object.assign(param, settings);
+  opt.pushUpdate = pushUpdate;
+  opt.smoothEye = 0.8;
+  opt.smoothDist = 0.25;
+  opt.defautDist = 0.12;
+  opt.threshold = 0.85;
+  opt.tfUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@2.0.1/dist/tf-core.min.js';
+  opt.wasmUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.0.1/dist/tf-backend-wasm.min.js';
+  opt.wasmPath = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.0.1/dist/tfjs-backend-wasm.wasm';
+  opt.convUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@2.0.1/dist/tf-converter.min.js';
+  opt.modelUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.5/dist/blazeface.min.js';
+  Object.assign(opt, settings);
 
   video = document.createElement('video');
   video.playsInline = true;
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     return navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-      video.srcObject = stream;
-      return new Promise((resolve) => {
-        video.onloadedmetadata = () => {
-          video.play();
-          video.width = video.videoWidth;
-          video.height = video.videoHeight;
-          setBackend('wasm').finally(async () => {
-            model = await blazeface();
-            model.scoreThreshold = param.threshold;
-            requestAnimationFrame(render);
-            resolve(true);
-          });
-        };
+      fetchInject([
+        opt.tfUrl,
+        opt.wasmUrl,
+        opt.convUrl,
+        opt.modelUrl
+      ]).then(() => {
+        tf.wasm.setWasmPath(opt.wasmPath);
+        return new Promise((resolve) => {
+          video.srcObject = stream;
+          video.onloadedmetadata = () => {
+            video.play();
+            video.width = video.videoWidth;
+            video.height = video.videoHeight;
+            tf.setBackend('wasm').finally(async () => {
+              model = await blazeface.load();
+              model.scoreThreshold = opt.threshold;
+              requestAnimationFrame(render);
+              resolve(true);
+            });
+          };
+        });
       });
     }).catch(() => {
       return false;
@@ -47,8 +57,8 @@ async function render() {
       eyes = nextEyes;
     } else {
       for (let i = 0; i < 4; ++i) {
-        eyes[i] *= 1 - param.smoothEye;
-        eyes[i] += nextEyes[i] * param.smoothEye;
+        eyes[i] *= 1 - opt.smoothEye;
+        eyes[i] += nextEyes[i] * opt.smoothEye;
       }
     }
 
@@ -58,14 +68,14 @@ async function render() {
     if (typeof dist == 'undefined') {
       dist = nextDist;
     } else {
-      dist *= 1 - param.smoothDist;
-      dist += nextDist * param.smoothDist;
+      dist *= 1 - opt.smoothDist;
+      dist += nextDist * opt.smoothDist;
     }
 
-    param.pushUpdate({
+    opt.pushUpdate({
       x: (eyes[0] + eyes[2]) / video.width - 1,
       y: 1 - (eyes[1] + eyes[3]) / video.width,
-      z: param.defautDist / dist
+      z: opt.defautDist / dist
     });
   }
   requestAnimationFrame(render);

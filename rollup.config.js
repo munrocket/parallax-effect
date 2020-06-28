@@ -2,6 +2,7 @@
 import pkg from './package.json';
 import builtins from 'rollup-plugin-node-builtins';
 import resolve from 'rollup-plugin-node-resolve';
+import cleanup from 'rollup-plugin-cleanup';
 
 export default [
   {
@@ -12,7 +13,8 @@ export default [
     ],
     plugins: [
       builtins(),
-      resolve()
+      resolve(),
+      cleanup()
     ]
   }
 ];

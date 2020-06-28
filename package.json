@@ -1,6 +1,6 @@
 {
   "name": "parallax-effect",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Parallax effect for web using face tracking. Image-based 3d display with tfjs.",
   "main": "src/parallax-effect.js",
   "browser": "dist/parallax-effect.js",
@@ -11,13 +11,12 @@
     "start": "servez -S"
   },
   "dependencies": {
-    "@tensorflow-models/blazeface": "^0.0.5",
-    "@tensorflow/tfjs-backend-wasm": "^1.7.4",
-    "@tensorflow/tfjs-converter": "^1.7.4",
-    "@tensorflow/tfjs-core": "^1.7.4"
+    "@tensorflow/tfjs-core": "^2.0.1",
+    "fetch-inject": "^2.0.4"
   },
   "devDependencies": {
     "rollup": "^2.18.1",
+    "rollup-plugin-cleanup": "^3.1.1",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-resolve": "^5.2.0",
     "servez": "^1.10.0"
