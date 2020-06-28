@@ -1,6 +1,7 @@
 # parallax-effect [![bundlephobia](https://badgen.net/bundlephobia/minzip/parallax-effect)](https://bundlephobia.com/result?p=parallax-effect)
 
-Parallax view in javascript using face tracking, can be a good improvement for 3d scenes or photogrammetry. If the user prohibits using the camera, nothing loads, like with HMR in webpack. This library uses TFJS with WASM backend on CPU, so your GPU will be free.
+Parallax effect in javascript using face tracking, can be a good improvement for 3d scenes. If the user prohibits using the camera,
+nothing loads. This library uses TFJS with WASM backend on CPU, so your GPU will be free.
 
 ### Examples
 * [background](https://munrocket.github.io/parallax-effect/examples/background.html)
@@ -15,26 +16,26 @@ Parallax view in javascript using face tracking, can be a good improvement for 3
 Run `npm install parallax-effect` and import it as ES module
 ```js
   import * as Parallax from '../dist/parallax-effect.mjs';
-  Parallax.init( position => {
-    console.log( position );
+  Parallax.init( view => {
+    console.log( view );
   })
 ```
 or add it in script tag
 ```js
   <script src="../dist/parallax-effect.js"></script>
   <script>
-    Parallax.init( position => {
-      console.log( position );
+    Parallax.init( view => {
+      console.log( view );
     })
   </script>
 ```
 
 ### Usage
-Position is 3d vector where x/y in range [-0.5, 0.5] and z is positive, you can check for successfull init or change default settings: smoothing, default distance between eyes to change z, threshold in blazeface model or tfjs versions.
+View is 3d vector where x/y in range [-0.5, 0.5] and z is positive, you can check for successfull init or change default settings: smoothing, default distance between eyes to change z, threshold in blazeface model or change tfjs source links from jsdelivr to unpkg.
 ```js
 Parallax.init(
-  pos => {
-    console.log( pos.x, pos.y, pos.z );
+  view => {
+    console.log( view.x, view.y, view.z );
   }, {
     smoothEye: 0.8,
     smoothDist: 0.25,
@@ -48,10 +49,11 @@ Parallax.init(
 
 ### Roadmap
 
-- [x] proper examples (threejs/deepview)
+- [x] proper examples
+- [x] ema smoothing
 - [x] iOS fix for camera
-- [x] dynamic import for tfjs
-- [ ] mouse / gyroscope fallback
+- [x] lazy load for tfjs
+- [ ] mouse/gyroscope fallback
 
 ### References
 

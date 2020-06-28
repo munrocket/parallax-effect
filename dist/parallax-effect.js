@@ -68,16 +68,17 @@
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       return navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
         fetchInject([
+          opt.wasmUrl
+        ], fetchInject([
           opt.tfUrl,
-          opt.wasmUrl,
-          opt.convUrl,
-          opt.modelUrl
-        ]).then(() => {
+          opt.modelUrl,
+          opt.convUrl
+        ])).then(() => {
           tf.wasm.setWasmPath(opt.wasmPath);
           return new Promise((resolve) => {
             video.srcObject = stream;
+            video.play();
             video.onloadedmetadata = () => {
-              video.play();
               video.width = video.videoWidth;
               video.height = video.videoHeight;
               tf.setBackend('wasm').finally(async () => {

@@ -37,12 +37,13 @@
     </div>
 
 		<script type="module">
+
+      import * as Parallax from '../dist/parallax-effect.mjs';
       
       import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.117.1/build/three.module.js';
       import { PerspectiveCamera } from 'https://cdn.jsdelivr.net/npm/three@0.117.1/build/three.module.js';
       import { PLYLoader } from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/loaders/PLYLoader.js';
       import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/OrbitControls.js';
-      import { init as parallaxInit } from '../dist/parallax-effect.mjs';
 
       const data = {
         "atlas": "res/paint/texture_atlas_rgba.png",
@@ -68,7 +69,7 @@
 
         // camera update with parallax
 
-        parallaxInit( view => {
+        Parallax.init( view => {
           camera.position.set( pos0.x + 0.3 * view.x, pos0.y + 0.3 * view.y, pos0.z * ( 0.6 + 0.4 * view.z ) );
           camera.rotation.x = - 0.12 * view.y / aspect / 1.5;
           camera.rotation.y = 0.12 * view.x;
