@@ -75,7 +75,9 @@
         camera.rotation.y = 0.12 * view.x;
         camera.fov = fov0 / ( 1.3 - 0.3 * view.z );
         camera.updateProjectionMatrix();
-      }, { smoothDist: 0.1 } );
+      }, { smoothDist: 0.1 } ).catch( errorMessage => {
+        alert('TFJS not loaded! ' + errorMessage);
+      });
 
       //
 

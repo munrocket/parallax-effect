@@ -38,16 +38,15 @@ export function init(pushUpdate, settings = {}) {
             tf.setBackend('wasm').then(async () => {
               model = await blazeface.load();
               model.scoreThreshold = opt.threshold;
-              requestAnimationFrame(render);
-              resolve(0);
+              resolve(requestAnimationFrame(render));
             }).catch(() => {
-              resolve(1);
+              reject('Internal error with wasm.');
             });
           };
         });
       });
     }).catch(() => {
-      return 2;
+      throw('Turn on camera or change browser.');
     });
   }
 }
