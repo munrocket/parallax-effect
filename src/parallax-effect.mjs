@@ -19,7 +19,7 @@ export function init(pushUpdate, settings = {}) {
   video = document.createElement('video');
   video.playsInline = true;
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    return navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+    return navigator.mediaDevices.getUserMedia({ video: true, facingMode: 'user' }).then((stream) => {
       fetchInject([
         opt.modelUrl
       ], fetchInject([
