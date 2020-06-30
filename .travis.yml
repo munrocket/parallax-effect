@@ -1,10 +1,16 @@
 language: node_js
 node_js: 10
 
-deploy:
-  provider: npm
-  edge: true
-  email: $NPM_EMAIL
-  api_key: $NPM_TOKEN
-  on:
-    branch: master
+jobs:
+  include:
+    - name: package
+      deploy:
+        provider: npm
+        edge: true
+        email: $NPM_EMAIL
+        api_key: $NPM_TOKEN
+        on:
+          branch: master
+
+  allow_failures:
+    - name: package

@@ -63,16 +63,14 @@
       gui.add( settings, 'location', [ 'fire', 'paint', 'room' ] ).onChange(() => {
         cancelAnimationFrame(rafId);
         clearScene(scene);
-        init();
+        initScene();
       });
 
-			init();
-			animate();
-
-			function init() {
-
-				scene = new THREE.Scene();
-        scene.background = new THREE.Color( 0x808080 );
+      initParallax();
+			initScene();
+      animate();
+      
+      function initParallax() {
 
         let aspect = window.innerWidth / window.innerHeight;
         let pos0 = new THREE.Vector3( 0, 1.6, 0 );
@@ -105,13 +103,20 @@
           alert( 'TFJS not loaded! ' + errorMessage );
         });
 
-        //
+        // resize event
 
         renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c') });
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
         window.addEventListener( 'resize', onWindowResize, false );
+
+      }
+
+			function initScene() {
+
+				scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0x808080 );
 
         const texture = new THREE.TextureLoader().load( settings.atlas.replace( 'location', settings.location ) );
         texture.flipY = false;
@@ -143,22 +148,35 @@
 
       }
       
-      function clearScene(obj){
-        while(obj.children.length > 0){ 
-          clearScene(obj.children[0])
-          obj.remove(obj.children[0]);
-        }
-        if(obj.geometry) obj.geometry.dispose()
+      function clearScene( obj ){
 
-        if(obj.material){
-          Object.keys(obj.material).forEach(prop => {
-            if(!obj.material[prop])
-              return         
-            if(typeof obj.material[prop].dispose === 'function')                                  
-              obj.material[prop].dispose()                                                        
-          })
-          obj.material.dispose()
+        while ( obj.children.length > 0 ){ 
+
+          clearScene( obj.children[0] )
+          obj.remove( obj.children[0] );
+
         }
+        if ( obj.geometry ) {
+
+          obj.geometry.dispose();
+
+        }
+        if ( obj.material ) {
+
+          Object.keys( obj.material ).forEach( prop => {
+
+            if ( !obj.material[prop] ) return;
+            if ( typeof obj.material[prop].dispose === 'function' ) {
+
+              obj.material[prop].dispose();
+
+            }
+
+          });
+          obj.material.dispose();
+
+        }
+
       }
 
 			function onWindowResize() {
