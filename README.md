@@ -7,7 +7,6 @@ nothing loads. This library uses TFJS with WASM backend on CPU, so your GPU will
 * [background](https://munrocket.github.io/parallax-effect/examples/background.html)
 * [three.js](https://munrocket.github.io/parallax-effect/examples/threejs.html)
 * [deepview](https://munrocket.github.io/parallax-effect/examples/deepview.html)
-* [deepview2](https://munrocket.github.io/parallax-effect/examples/deepview2.html)
 
 ![](https://habrastorage.org/webt/rj/65/g9/rj65g9_jtm2rgljgmk6yu5sjf6k.jpeg)
 
@@ -18,7 +17,7 @@ Run `npm install parallax-effect` and import it as ES module
   import * as Parallax from '../dist/parallax-effect.mjs';
   Parallax.init( view => {
     console.log( view );
-  })
+  } );
 ```
 or add it in script tag
 ```js
@@ -26,12 +25,12 @@ or add it in script tag
   <script>
     Parallax.init( view => {
       console.log( view );
-    })
+    } );
   </script>
 ```
 
 ### Usage
-View is 3d vector where x/y in range [-0.5, 0.5] and z is positive, you can check for successfull init or change default settings: smoothing, default distance between eyes to change z, threshold in blazeface model or change tfjs source links from jsdelivr to unpkg.
+*View* is a 3d vector with components similar to spherical coordinates: x/y in range [-1, 1] it's a value proportional to angle (because α ≈ sin(α)) and z is a value proportional to distance from camera to head. Also you can check for successfull init or change default settings: smoothing, default distance between eyes to change z, threshold in blazeface model or change tfjs source links from jsdelivr to unpkg / own server.
 ```js
 Parallax.init(
   view => {
@@ -44,7 +43,7 @@ Parallax.init(
   }
 ).then( errorCode => {
   console.log( errorCode );
-});
+} );
 ```
 
 ### Roadmap
