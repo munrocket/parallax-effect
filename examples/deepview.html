@@ -50,6 +50,7 @@
       import { GUI } from 'https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.module.js';
 
       let camera, scene, renderer, gui, rafId;
+      let view = { x: 0, y: 0, z: 1 };
 
       let settings = {
         'strength': 1,
@@ -112,7 +113,6 @@
 
           if ( mouseFallback ) {
 
-            let view = { x: 0, y: 0, z: 1 };
             view.x = 2 * e.clientX / window.innerWidth - 1;
             view.y = 1 - 2 * e.clientY / window.innerHeight;
             updateCamera( view );
