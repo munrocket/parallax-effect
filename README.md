@@ -3,10 +3,10 @@
 Parallax effect in javascript using face tracking, can be a good improvement for 3d scenes. If the user prohibits using the camera,
 nothing loads. This library uses TFJS with WASM backend on CPU, so your GPU will be free.
 
-### Examples
-* [background](https://munrocket.github.io/parallax-effect/examples/background.html)
-* [three.js](https://munrocket.github.io/parallax-effect/examples/threejs.html)
+### Live examples
 * [deepview](https://munrocket.github.io/parallax-effect/examples/deepview.html)
+* [pixi.js](https://munrocket.github.io/parallax-effect/examples/pixi.html)
+* [three.js](https://munrocket.github.io/parallax-effect/examples/threejs.html)
 
 ![](https://habrastorage.org/webt/rj/65/g9/rj65g9_jtm2rgljgmk6yu5sjf6k.jpeg)
 
@@ -41,19 +41,23 @@ Parallax.init(
     defautDist: 0.12,
     threshold = 0.85
   }
-).then( errorCode => {
-  console.log( errorCode );
+).then( rafId => {
+  console.log( 'cancelAnimationFrame(' + rafId + ')' );
+}).catch( errorMessage => {
+  console.log( errorMessage );
 } );
 ```
 
 ### Roadmap
 
-- [x] proper examples
+- [x] deepview example
 - [x] ema smoothing
 - [x] iOS fix for camera
 - [x] lazy load for tfjs
-- [ ] mouse/gyroscope fallback
+- [x] pixi.js example
+- [x] mouse fallback
+- [ ] gyroscope fallback
 
-### References
+### Contribution
 
-1. Eric Lengyel. *Oblique View Frustum Depth Projection and Clipping* [[url](https://www.semanticscholar.org/paper/Oblique-View-Frustum-Depth-Projection-and-Clipping-Lengyel/d4a4128a62e3ed060776b90a7e67c095e441b32d)]
+Feel free to make issues or/and contribute.

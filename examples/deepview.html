@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
-    <title>parallax-effect</title>
+    <link rel="stylesheet" href="res/deepview/style.css">
+    <title>Parallax-effect with Three.js</title>
 		<style>
 			body {
 				font-family: Monospace;
@@ -48,15 +49,15 @@
       import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.117.1/examples/jsm/controls/OrbitControls.js';
       import { GUI } from 'https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.module.js';
 
+      let camera, scene, renderer, gui, rafId;
+
       let settings = {
         'strength': 1,
         'location': 'fire',
-        'atlas': 'res/location/texture_atlas_rgba.png',
-        'rigs': 'res/location/mdi_rig_space_mesh_000.ply',
+        'atlas': 'res/deepview/location/texture_atlas_rgba.png',
+        'rigs': 'res/deepview/location/mdi_rig_space_mesh_000.ply',
         'numLayers': 16
       };
-
-      let camera, scene, renderer, gui, rafId;
 
       gui = new GUI();
       gui.add( settings, 'strength', 0.2, 5 );
@@ -64,7 +65,7 @@
         cancelAnimationFrame(rafId);
         clearScene(scene);
         initScene();
-      });
+      } );
 
       initParallax();
 			initScene();
@@ -80,28 +81,25 @@
 
         // camera update with parallax
 
+        let mouseFallback = true;
         Parallax.init( view => {
+
           view.x *= settings.strength;
           view.y *= settings.strength;
 
-          camera.position.set( pos0.x + 0.3 * view.x, pos0.y + 0.3 * view.y, pos0.z * ( 0.6 + 0.4 * view.z ) );
-          camera.rotation.x = - 0.12 * view.y / aspect / 1.5;
-          camera.rotation.y = 0.12 * view.x;
-          camera.fov = fov0 / ( 0.9 + 0.1 * view.z );
-          camera.updateProjectionMatrix();
-          
-          let PM = camera.projectionMatrix;
-          let IM = camera.projectionMatrixInverse.getInverse( PM );
-          IM.elements[0] -= 0.04 * view.x;
-          IM.elements[5] -= 0.04 * view.y / aspect / 1.5;
-          IM.elements[2] += 0.1 * view.x;
-          IM.elements[6] += 0.1 * view.y;
-          PM.getInverse( IM );
-        }).then( id => {
+          updateCamera( view, camera, pos0, fov0, aspect );
+
+        } ).then( id => {
+
+          mouseFallback = false;
+          updateCamera( view, camera, pos0, fov0, aspect );
           rafId = id;
-        }).catch( errorMessage => {
+
+        } ).catch( errorMessage => {
+
           alert( 'TFJS not loaded! ' + errorMessage );
-        });
+
+        } );
 
         // resize event
 
@@ -110,6 +108,38 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
         window.addEventListener( 'resize', onWindowResize, false );
+        window.addEventListener( 'mousemove', e => {
+
+          if ( mouseFallback ) {
+
+            let view = { x: 0, y: 0, z: 1 };
+            view.x = 2 * e.clientX / window.innerWidth - 1;
+            view.y = 1 - 2 * e.clientY / window.innerHeight;
+            updateCamera( view );
+            
+          }
+
+        } );
+
+        // update camera
+
+        function updateCamera( view ) {
+
+          camera.position.set( pos0.x + 0.3 * view.x, pos0.y + 0.3 * view.y, pos0.z * ( 0.6 + 0.4 * view.z ) );
+          camera.rotation.x = - 0.12 * view.y / aspect / 1.5;
+          camera.rotation.y = 0.12 * view.x;
+          camera.fov = fov0 / ( 0.9 + 0.1 * view.z );
+          camera.updateProjectionMatrix();
+
+          let PM = camera.projectionMatrix;
+          let IM = camera.projectionMatrixInverse.getInverse( PM );
+          IM.elements[0] -= 0.04 * view.x;
+          IM.elements[5] -= 0.04 * view.y / aspect / 1.5;
+          IM.elements[2] += 0.1 * view.x;
+          IM.elements[6] += 0.1 * view.y;
+          PM.getInverse( IM );
+
+        }
 
       }
 
@@ -117,6 +147,8 @@
 
 				scene = new THREE.Scene();
         scene.background = new THREE.Color( 0x808080 );
+
+        c
 
         const texture = new THREE.TextureLoader().load( settings.atlas.replace( 'location', settings.location ) );
         texture.flipY = false;
@@ -172,7 +204,7 @@
 
             }
 
-          });
+          } );
           obj.material.dispose();
 
         }

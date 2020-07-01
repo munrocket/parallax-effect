@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  background-color: #272d37;
+}
+
+#container {
+  display: flex;           /* establish flex container */
+  flex-direction: column;  /* make main axis vertical */
+  justify-content: center; /* center items vertically, in this case */
+  align-items: center;     /* center items horizontally, in this case */
+  height: 100vh;
+  width: 100vw;
+}
+
+#app {
+  max-width: 800px;
+  text-align: center;     /* will center text in <p>, which is not a flex item */
+}
+
+#info {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+a {
+  color: #ff4;
+}

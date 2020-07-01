@@ -1,0 +1,19 @@
+body {
+  font-family: Monospace;
+  background-color: #808080;
+  color: #fff;
+  margin: 0;
+}
+canvas {
+  display: block;
+}
+
+a {
+  color: #ff4;
+}
+#info {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
