@@ -30,6 +30,10 @@
     "view",
     "motion"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/munrocket/parallax-effect.git"
+  },
   "author": "munrocket",
   "license": "MIT"
 }
