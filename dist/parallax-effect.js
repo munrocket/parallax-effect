@@ -56,17 +56,17 @@
     opt.smoothDist = 0.25;
     opt.defautDist = 0.12;
     opt.threshold = 0.85;
-    opt.tfUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@2.0.1/dist/tf-core.min.js';
-    opt.wasmUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.0.1/dist/tf-backend-wasm.min.js';
-    opt.wasmPath = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.0.1/dist/tfjs-backend-wasm.wasm';
-    opt.convUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@2.0.1/dist/tf-converter.min.js';
-    opt.modelUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.5/dist/blazeface.min.js';
+    opt.tfUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.7.0/dist/tf-core.min.js';
+    opt.wasmUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.7.0/dist/tf-backend-wasm.min.js';
+    opt.wasmPath = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.7.0/dist/tfjs-backend-wasm.wasm';
+    opt.convUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@3.7.0/dist/tf-converter.min.js';
+    opt.modelUrl = 'https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.min.js';
     Object.assign(opt, settings);
 
     video = document.createElement('video');
     video.playsInline = true;
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      return navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+      return navigator.mediaDevices.getUserMedia({ video: true, facingMode: 'user' }).then((stream) => {
         fetchInject([
           opt.modelUrl
         ], fetchInject([

@@ -1,7 +1,6 @@
 # parallax-effect [![bundlephobia](https://badgen.net/bundlephobia/minzip/parallax-effect)](https://bundlephobia.com/result?p=parallax-effect)
 
-Parallax effect in javascript using face tracking, can be a good improvement for 3d scenes. If the user prohibits using the camera,
-nothing loads. This library uses TFJS with WASM backend on CPU, so your GPU will be free.
+Parallax effect in javascript using face tracking, can be a good improvement for 3d scenes. This library uses TFJS with WASM backend on CPU, so your GPU will be free. Supports lazy loading.
 
 ### Live examples
 * [deepview](https://munrocket.github.io/parallax-effect/examples/deepview.html)
