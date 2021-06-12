@@ -2,10 +2,12 @@
 
 Parallax effect in javascript using face tracking, can be a good improvement for 3d scenes. This library uses TFJS with WASM backend on CPU, so your GPU will be free. Supports lazy loading.
 
+Inspired by https://twitter.com/lucknknock C# demo
+
 ### Live examples
-* [deepview](https://munrocket.github.io/parallax-effect/examples/deepview.html)
-* [pixi.js](https://munrocket.github.io/parallax-effect/examples/pixi.html)
-* [three.js](https://munrocket.github.io/parallax-effect/examples/threejs.html)
+* [deepview](https://munsocket.github.io/parallax-effect/examples/deepview.html)
+* [pixi.js](https://munsocket.github.io/parallax-effect/examples/pixi.html)
+* [three.js](https://munsocket.github.io/parallax-effect/examples/threejs.html)
 
 ![](https://habrastorage.org/webt/rj/65/g9/rj65g9_jtm2rgljgmk6yu5sjf6k.jpeg)
 
