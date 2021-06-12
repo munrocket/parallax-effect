@@ -1,6 +1,6 @@
 {
   "name": "parallax-effect",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Parallax effect for web using face tracking. Image-based 3d display with tfjs.",
   "main": "src/parallax-effect.js",
   "browser": "dist/parallax-effect.js",

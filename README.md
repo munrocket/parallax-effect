@@ -2,7 +2,7 @@
 
 Parallax effect in javascript using face tracking, can be a good improvement for 3d scenes. This library uses TFJS with WASM backend on CPU, so your GPU will be free. Supports lazy loading.
 
-Inspired by https://twitter.com/lucknknock C# demo
+Inspired by [@lucknknock](https://twitter.com/lucknknock) C# demo
 
 ### Live examples
 * [deepview](https://munsocket.github.io/parallax-effect/examples/deepview.html)
@@ -22,7 +22,7 @@ Run `npm install parallax-effect` and import it as ES module
 ```
 or add it in script tag
 ```js
-  <script src="../dist/parallax-effect.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/parallax-effect/dist/parallax-effect.min.js"></script>
   <script>
     Parallax.init( view => {
       console.log( view );
@@ -31,16 +31,16 @@ or add it in script tag
 ```
 
 ### Usage
-*View* is a 3d vector with components similar to spherical coordinates: x/y in range [-1, 1] it's a value proportional to angle (because α ≈ sin(α)) and z is a value proportional to distance from camera to head. Also you can check for successfull init or change default settings: smoothing, default distance between eyes to change z, threshold in blazeface model or change tfjs source links from jsdelivr to unpkg / own server.
+*View* in code below is a 3d vector with components similar to spherical coordinates: x/y in range [-1, 1] and proportional to angle, z is proportional to distance from camera to head. Also you can check for successfull init or change default settings: smoothing, default distance between eyes to change z, threshold in blazeface model or change tfjs source links from jsdelivr to unpkg / own server.
 ```js
 Parallax.init(
   view => {
     console.log( view.x, view.y, view.z );
   }, {
-    smoothEye: 0.8,
-    smoothDist: 0.25,
-    defautDist: 0.12,
-    threshold = 0.85
+    smoothEye: 0.8, // smoothing eye (x, y)
+    smoothDist: 0.25, // smoothing distance (z)
+    defautDist: 0.12, // parameter for distance estimation
+    threshold = 0.85 // blazeface detection probability
   }
 ).then( rafId => {
   console.log( 'cancelAnimationFrame(' + rafId + ')' );
@@ -51,11 +51,10 @@ Parallax.init(
 
 ### Roadmap
 
-- [x] deepview example
-- [x] ema smoothing
-- [x] iOS fix for camera
+- [x] smoothing head detection with EMA
+- [x] support for iOS/Macs
 - [x] lazy load for tfjs
-- [x] pixi.js example
+- [x] three.js/pixi.js examples
 - [x] mouse fallback
 - [ ] gyroscope fallback
 
