@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - materials - matcap</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="https://threejs.org/examples/main.css">
+	</head>
+
+	<body>
+
+    <video id="video" style="display:none" autoplay playsinline></video>
+		<div id="info">
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - webgl materials matcap<br />
+			Drag-and-drop JPG, PNG, or EXR MatCap image files<br/>
+		</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.8.0/dist/tf-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.8.0/dist/tf-backend-wasm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@3.8.0/dist/tf-converter.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.min.js"></script>
+
+		<script type="module">
+
+      import * as THREE from 'https://threejs.org/build/three.module.js';
+
+      import { GUI } from 'https://threejs.org/examples/jsm/libs/dat.gui.module.js';
+      import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
+      import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js';
+      import { EXRLoader } from 'https://threejs.org/examples/jsm/loaders/EXRLoader.js';
+
+      import * as Parallax from '../src/3d-head-position.js';
+      //import * as Parallax from '../dist/parallax-effect.mjs';
+
+			let mesh, renderer, scene, camera, videoTexture;
+
+			const API = {
+				color: 0xffffff, // sRGB
+				exposure: 1.0
+			};
+
+			init();
+
+			function init() {
+
+				// renderer
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+
+				// tone mapping
+				renderer.toneMapping = THREE.ACESFilmicToneMapping;
+			 	renderer.toneMappingExposure = API.exposure;
+
+				renderer.outputEncoding = THREE.sRGBEncoding;
+
+				// scene
+				scene = new THREE.Scene();
+
+				// camera
+        let pos = new THREE.Vector3().set( 0, 0, 0 );
+				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 100 );
+				camera.position.set( 0, 0, 13 );
+
+				// manager
+				const manager = new THREE.LoadingManager( render );
+
+				// matcap
+				const loaderEXR = new EXRLoader( manager ).setDataType( THREE.UnsignedByteType ); // default: FloatType
+
+				const matcap = loaderEXR.load( 'https://threejs.org/examples/textures/matcaps/040full.exr' );
+
+				// normalmap
+				const loader = new THREE.TextureLoader( manager );
+
+				const normalmap = loader.load( 'https://threejs.org/examples/models/gltf/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg' );
+
+        Parallax.init( view => {
+          mesh.position.set(view.x, view.y - .8, 0.5 / view.z).multiplyScalar(2);
+          mesh.rotation.set(view.rx, view.ry, view.rz);
+        }, { smoothDist: 0.1, smoothRotors: 0.4 } ).catch( errorMessage => {
+          alert('TFJS not loaded! ' + errorMessage);
+        });
+
+				// model
+				new GLTFLoader( manager ).load( 'https://threejs.org/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb', function ( gltf ) {
+
+
+              // if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+          //   const constraints = { video: { width: 1280, height: 720, facingMode: 'user' } };
+          //   navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
+          //     video.srcObject = stream;
+          //     video.play();
+          //     videoTexture = new THREE.VideoTexture( video );
+
+          scene.background = videoTexture;
+
+          //mesh
+          mesh = gltf.scene.children[ 0 ];
+          mesh.position.y = - 0.25;
+
+          mesh.material = new THREE.MeshMatcapMaterial( {
+
+          color: new THREE.Color().setHex( API.color ).convertSRGBToLinear(),
+          matcap: matcap,
+          normalMap: normalmap
+
+          } );
+
+          scene.add( mesh );
+
+          //     } ).catch( function ( error ) {
+          //       console.error( 'Unable to access the camera/webcam.', error );
+          //     } );
+          //   } else {
+          //     console.error( 'MediaDevices interface not available.' );
+          //   }
+
+				} );
+
+				// gui
+				const gui = new GUI();
+
+				gui.addColor( API, 'color' )
+					.listen()
+					.onChange( function () {
+
+						mesh.material.color.set( API.color ).convertSRGBToLinear();
+
+					} );
+
+				gui.add( API, 'exposure', 0, 2 )
+					.onChange( function () {
+
+						renderer.toneMappingExposure = API.exposure;
+
+					} );
+
+				gui.domElement.style.webkitUserSelect = 'none';
+
+				window.addEventListener( 'resize', onWindowResize );
+        requestAnimationFrame(render);
+
+			}
+
+			function onWindowResize() {
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+			}
+
+			function render() {
+
+				renderer.render( scene, camera );
+        requestAnimationFrame(render);
+
+			}
+
+		</script>
+
+	</body>
+</html>
