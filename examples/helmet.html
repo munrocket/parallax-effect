@@ -86,7 +86,7 @@
 				const normalmap = loader.load( 'https://threejs.org/examples/models/gltf/LeePerrySmith/Infinite-Level_02_Tangent_SmoothUV.jpg' );
 
         Parallax.init( view => {
-          mesh.position.set(view.x, view.y - .8, 0.5 / view.z).multiplyScalar(2);
+          mesh.position.set(view.x*4, (view.y - 1)*2, 1.4 / view.z);
           mesh.rotation.set(view.rx, view.ry, view.rz);
         }, { smoothDist: 0.1, smoothRotors: 0.1 } ).catch( errorMessage => {
           alert('TFJS not loaded! ' + errorMessage);
