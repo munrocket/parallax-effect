@@ -20,14 +20,23 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@3.8.0/dist/tf-converter.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.min.js"></script>
 
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "https://cdn.jsdelivr.net/npm/three@0.131.3/build/three.module.js",
+					"three/examples/": "https://cdn.jsdelivr.net/npm/three@0.131.3/examples/jsm/"
+				}
+			}
+		</script>
+
 		<script type="module">
 
-      import * as THREE from 'https://threejs.org/build/three.module.js';
+			import { GUI } from 'https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.module.js';
 
-      import { GUI } from 'https://threejs.org/examples/jsm/libs/dat.gui.module.js';
-      import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
-      import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js';
-      import { EXRLoader } from 'https://threejs.org/examples/jsm/loaders/EXRLoader.js';
+      import * as THREE from 'three';
+      //import { OrbitControls } from 'three/examples/controls/OrbitControls.js';
+      import { GLTFLoader } from 'three/examples/loaders/GLTFLoader.js';
+      import { EXRLoader } from 'three/examples/loaders/EXRLoader.js';
 
       import * as Parallax from '../src/3d-head-position.js';
       //import * as Parallax from '../dist/parallax-effect.mjs';
@@ -79,7 +88,7 @@
         Parallax.init( view => {
           mesh.position.set(view.x, view.y - .8, 0.5 / view.z).multiplyScalar(2);
           mesh.rotation.set(view.rx, view.ry, view.rz);
-        }, { smoothDist: 0.1, smoothRotors: 0.4 } ).catch( errorMessage => {
+        }, { smoothDist: 0.1, smoothRotors: 0.1 } ).catch( errorMessage => {
           alert('TFJS not loaded! ' + errorMessage);
         });
 
@@ -100,13 +109,15 @@
           mesh = gltf.scene.children[ 0 ];
           mesh.position.y = - 0.25;
 
-          mesh.material = new THREE.MeshMatcapMaterial( {
+          mesh.material = new THREE.MeshNormalMaterial();
 
-          color: new THREE.Color().setHex( API.color ).convertSRGBToLinear(),
-          matcap: matcap,
-          normalMap: normalmap
+          // new THREE.MeshMatcapMaterial( {
 
-          } );
+          //   color: new THREE.Color().setHex( API.color ).convertSRGBToLinear(),
+          //   matcap: matcap,
+          //   normalMap: normalmap
+
+          // } );
 
           scene.add( mesh );
 
