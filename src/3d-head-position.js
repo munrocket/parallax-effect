@@ -3,7 +3,7 @@ let opt = {};
 
 export function init(pushUpdate, settings = {}) {
   opt.pushUpdate = pushUpdate;
-  opt.smoothEye = 0.8;
+  opt.smoothEye = 0.5;
   opt.smoothDist = 0.25;
   opt.defautDist = 0.12;
   opt.smoothRotors = 0.2;

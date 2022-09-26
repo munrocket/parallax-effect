@@ -9,7 +9,7 @@
 
 	<body>
 
-    <video id="video" style="display:none" autoplay playsinline></video>
+		<video id="video" style="display:none" autoplay playsinline></video>
 		<div id="info">
 			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - webgl materials matcap<br />
 			Drag-and-drop JPG, PNG, or EXR MatCap image files<br/>
@@ -96,14 +96,17 @@
 				new GLTFLoader( manager ).load( 'https://threejs.org/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb', function ( gltf ) {
 
 
-              // if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
-          //   const constraints = { video: { width: 1280, height: 720, facingMode: 'user' } };
-          //   navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
-          //     video.srcObject = stream;
-          //     video.play();
-          //     videoTexture = new THREE.VideoTexture( video );
-
-          scene.background = videoTexture;
+          if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+            const constraints = { video: { width: 1280, height: 720, facingMode: 'user' } };
+            navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
+              video.srcObject = stream;
+              video.play();
+              videoTexture = new THREE.VideoTexture( video );
+							videoTexture.wrapS = THREE.RepeatWrapping;
+							videoTexture.repeat.x = - 1;
+          		scene.background = videoTexture;
+						});
+					}
 
           //mesh
           mesh = gltf.scene.children[ 0 ];
