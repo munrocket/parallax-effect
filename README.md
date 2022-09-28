@@ -56,6 +56,7 @@ Parallax.init(
 - [x] lazy load for tfjs
 - [x] three.js/pixi.js examples
 - [x] mouse fallback
+- [x] fix head rotation but not commit it in main branch yet
 - [ ] gyroscope fallback
 
 ### Contribution
